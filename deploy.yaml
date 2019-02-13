@@ -1,0 +1,106 @@
+---
+##################################################################################################
+# Redis DB
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis
+  labels:
+    app: redis
+spec:
+  ports:
+  - port: 6379
+    name: redis
+  selector:
+    app: redis
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: redis
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+      - name: redis
+        image: redis:alpine
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 6379
+---
+##################################################################################################
+# Backend
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+  labels:
+    app: backend
+spec:
+  selector:
+    app: backend
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        image: gcr.io/$(GCP_PROJECT_ID)/backend
+        imagePullPolicy: IfNotPresent
+---
+##################################################################################################
+# Frontend
+##################################################################################################
+apiVersion: v1
+kind: Service
+metadata:
+  name: frontend
+  labels:
+    app: frontend
+spec:
+  ports:
+  - port: 80
+    name: http
+  selector:
+    app: frontend
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: frontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: gcr.io/$(GCP_PROJECT_ID)/frontend
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 80
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: $(GOOGLE_APPLICATION_CREDENTIALS)
+          - name: GCP_PROJECT_ID
+            value: $(GCP_PROJECT_ID)
+          - name: GCP_PROJECT_ID
+            value: $(GCP_PROJECT_ID)
+          - name: GCP_PROJECT_ID
+            value: $(GCP_PROJECT_ID)

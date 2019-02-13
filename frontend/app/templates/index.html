@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+<!--css-->
+{% block css %}
+<style>
+body{
+    background:#ffffff;
+    color:#000000;
+}
+</style>
+{% endblock %}
+
+
+<!--js-->
+{% block js %}
+<script type="text/javascript"> 
+var app_location = document.location.origin;
+var socket;
+
+$(document).ready(function() {
+	socket = io(app_location, {path: '/socket.io'});
+	socket.on('connect', function(jsonObj) {
+		$('#div_socket_id').html('My Socket ID:' + socket.id );
+
+		console.log('websocket connected. client:', socket.id);	
+		socket.emit('connected', {'client': socket.id});
+	});
+
+    socket.on('serverInfo', function(jsonObj){
+        console.log('serverInfo received: '+ jsonObj.serverName)
+		$('#div_server_name').html('My Server Name:' + jsonObj.serverName );
+    })
+
+	socket.on('disconnect', function() {
+		console.log('disconnect ~886');
+	});
+	
+	socket.on('for_private', function(jsonObj) {
+		console.log('for_private received, client:', socket.id);
+		var item = jsonObj.item;
+		var msg = jsonObj.msg;
+		var str = '你剛抽到了:' + msg ;
+		$('#for_private').html(str);
+	});
+
+	socket.on('for_broadcast', function(jsonObj) {
+		console.log('for_broadcast received, client:', socket.id);
+		var item = jsonObj.item;
+		var msg = jsonObj.msg;
+		var str =  '獎品(' + item + ')' +msg+ ', 剛剛被抽走了<br/>' + $('#for_broadcast').html();
+		$('#for_broadcast').html(str);
+	});
+});
+</script>
+{% endblock %}
+
+<!--content-->
+{% block content %}
+<div id="div_socket_id"></div>
+<div id="div_server_name"></div>
+<hr />
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">001</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">002</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">003</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">004</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">005</button>
+<br/>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">006</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">007</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">008</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">009</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">010</button>
+<br/>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">011</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">012</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">013</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">014</button>
+<button onclick="socket.emit('connected', {'client': socket.id, 'item': $(this).text()});">015</button>
+<hr />
+<div id="for_private"></div>
+<hr />
+<div id="for_broadcast"></div>
+
+{% endblock %}

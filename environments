@@ -1,0 +1,16 @@
+# frontend image 名稱
+FRONTEND_IMAGE=frontend-image-${RND_KEY}
+# backend image 名稱
+BACKEND_IMAGE=backend-image-${RND_KEY}
+# 示範用專案ID
+GCP_PROJECT_ID=pubsub-projectid-${RND_KEY}
+# 偏好的 GCP zone
+GCP_ZONE=asia-east1-a
+# GKE 名稱
+GCP_GKE_NAME=pubsub-k8s-name-${RND_KEY}
+# Google Pub/Sub admin Service Account
+GCP_PUBSUB_ADMIN=pubsub-admin-${RND_KEY}
+# Google Pub/Sub request name
+GCP_PUBSUB_REQUEST_NAME=pubsub-request-${RND_KEY}
+# Google Pub/Sub response name
+GCP_PUBSUB_RESPONSE_NAME=pubsub-response-${RND_KEY}
