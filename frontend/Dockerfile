@@ -11,7 +11,6 @@ COPY supervisord.conf /python/supervisord.conf
 
 RUN mkdir -p /etc/google/auth
 COPY pubsub.json /etc/google/auth/pubsub.json
-#RUN export GOOGLE_APPLICATION_CREDENTIALS=/etc/google/auth/pubsub.json
 
 EXPOSE 80
 

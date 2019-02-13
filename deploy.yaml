@@ -36,16 +36,6 @@ spec:
 ##################################################################################################
 # Backend
 ##################################################################################################
-apiVersion: v1
-kind: Service
-metadata:
-  name: backend
-  labels:
-    app: backend
-spec:
-  selector:
-    app: backend
----
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -59,8 +49,17 @@ spec:
     spec:
       containers:
       - name: backend
-        image: gcr.io/$(GCP_PROJECT_ID)/backend
+        image: gcr.io/${GCP_PROJECT_ID}/${BACKEND_IMAGE}
         imagePullPolicy: IfNotPresent
+        env:
+          - name: GOOGLE_APPLICATION_CREDENTIALS
+            value: ${GOOGLE_APPLICATION_CREDENTIALS}
+          - name: GCP_PROJECT_ID
+            value: ${GCP_PROJECT_ID}
+          - name: GCP_PUBSUB_REQUEST_NAME
+            value: ${GCP_PUBSUB_REQUEST_NAME}
+          - name: GCP_PUBSUB_RESPONSE_NAME
+            value: ${GCP_PUBSUB_RESPONSE_NAME}
 ---
 ##################################################################################################
 # Frontend
@@ -73,10 +72,13 @@ metadata:
     app: frontend
 spec:
   ports:
-  - port: 80
+  - protocol: TCP
+    port: 80
     name: http
   selector:
     app: frontend
+  type: LoadBalancer
+  loadBalancerIP: ""
 ---
 apiVersion: extensions/v1beta1
 kind: Deployment
@@ -91,16 +93,16 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: gcr.io/$(GCP_PROJECT_ID)/frontend
+        image: gcr.io/${GCP_PROJECT_ID}/${FRONTEND_IMAGE}
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 80
         env:
           - name: GOOGLE_APPLICATION_CREDENTIALS
-            value: $(GOOGLE_APPLICATION_CREDENTIALS)
+            value: ${GOOGLE_APPLICATION_CREDENTIALS}
           - name: GCP_PROJECT_ID
-            value: $(GCP_PROJECT_ID)
-          - name: GCP_PROJECT_ID
-            value: $(GCP_PROJECT_ID)
-          - name: GCP_PROJECT_ID
-            value: $(GCP_PROJECT_ID)
+            value: ${GCP_PROJECT_ID}
+          - name: GCP_PUBSUB_REQUEST_NAME
+            value: ${GCP_PUBSUB_REQUEST_NAME}
+          - name: GCP_PUBSUB_RESPONSE_NAME
+            value: ${GCP_PUBSUB_RESPONSE_NAME}

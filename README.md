@@ -71,6 +71,8 @@ GCP_PUBSUB_ADMIN=pubsub-admin-${RND_KEY}
 GCP_PUBSUB_REQUEST_NAME=pubsub-request-${RND_KEY}
 # Google Pub/Sub response name
 GCP_PUBSUB_RESPONSE_NAME=pubsub-response-${RND_KEY}
+# Google pub/sub credential file path
+GOOGLE_APPLICATION_CREDENTIALS=/etc/google/auth/pubsub.json
 ```
 
 ## 建立 GCP 專案與服務
@@ -202,7 +204,9 @@ cp ${GCP_PUBSUB_ADMIN}.json ./backend/pubsub.json
 
 ## 配置 yaml 設定，將服務啟動於 GKE
 
-
+```bash
+envsubst < deploy.yaml | kubectl apply -f -
+```
 ## 完成
 
 最後請記得，刪除本次練習的專案，以節省費用

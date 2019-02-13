@@ -19,9 +19,10 @@ socketio = SocketIO(app)
 def index():
     return render_template('index.html', title="Pub/Sub Connect")
 
-@app.route('/add/<client_id>/<msg>')
-def send_message(client_id, msg):
-    data = msg.encode('utf-8')
+@socketio.on('additem')
+def send_message(jsonString):
+    data = jsonString['item'].encode('utf-8')
+    client_id = jsonString['client']
 
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(project_id, apply_request)

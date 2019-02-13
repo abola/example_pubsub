@@ -14,3 +14,5 @@ GCP_PUBSUB_ADMIN=pubsub-admin-${RND_KEY}
 GCP_PUBSUB_REQUEST_NAME=pubsub-request-${RND_KEY}
 # Google Pub/Sub response name
 GCP_PUBSUB_RESPONSE_NAME=pubsub-response-${RND_KEY}
+# Google pub/sub credential file path
+GOOGLE_APPLICATION_CREDENTIALS=/etc/google/auth/pubsub.json
