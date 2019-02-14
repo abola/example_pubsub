@@ -47,6 +47,10 @@ spec:
       labels:
         app: backend
     spec:
+      initContainers:
+      - name: init-wait
+        image: alpine
+        command: ["sh", "-c", "for i in $(seq 1 300); do nc -zvw1 redis 6379 && exit 0 || sleep 3; done; exit 1"]
       containers:
       - name: backend
         image: gcr.io/${GCP_PROJECT_ID}/${BACKEND_IMAGE}

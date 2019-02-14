@@ -39,7 +39,7 @@ $(document).ready(function() {
 		console.log('for_private received, client:', socket.id);
 		var item = jsonObj.item;
 		var msg = jsonObj.msg;
-		var str = '你剛抽到了:' + msg ;
+		var str = '你剛抽到了:' +item+ '(' +msg+ ')' ;
 		$('#for_private').html(str);
 	});
 
@@ -47,7 +47,7 @@ $(document).ready(function() {
 		console.log('for_broadcast received, client:', socket.id);
 		var item = jsonObj.item;
 		var msg = jsonObj.msg;
-		var str =  '獎品(' + item + ')' +msg+ ', 剛剛被抽走了<br/>' + $('#for_broadcast').html();
+		var str =  '獎品(' + msg + ')' +item+ ', 剛剛被抽走了<br/>' + $('#for_broadcast').html();
 		$('#for_broadcast').html(str);
 	});
 });
