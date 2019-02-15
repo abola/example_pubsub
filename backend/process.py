@@ -13,24 +13,36 @@ hostname       = os.environ.get('HOSTNAME') or 'unknown'
 
 
 subscriber = pubsub_v1.SubscriberClient()
-subscription_path = subscriber.subscription_path(project_id, apply_request)
+topic_path = subscriber.topic_path(project_id, apply_request)
+subscription_path = subscriber.subscription_path(
+    project_id, '{}-{}'.format(apply_request, hostname))
+
+# 在服務啟動時建立訂閱
+subscriber.create_subscription(subscription_path, topic_path)
+
 
 def read_redis(key):
+    print("Step 3: Backend query redis service. item: {}".format(key))
     return json.loads(r.get(key), object_hook=JSONObject).data
 
 
 def callback(message):
     message.ack()
-    print('Received message: {}'.format(message))
+    print("Step 2: Backend received request from pubsub. ")
     publisher = pubsub_v1.PublisherClient()
-    topic_path = publisher.topic_path(project_id, apply_response)
+    response_topic_path = publisher.topic_path(project_id, apply_response)
 
-    item=read_redis(message.data.decode("utf-8"))
-    publisher.publish(topic_path
+    # 由 Redis 讀出指定項目內容
+    name=read_redis(message.data.decode("utf-8"))
+
+    # 將 response 發佈至 pubsub
+    publisher.publish(response_topic_path
                       , data      = message.data
                       , client_id = message.attributes.get('client_id')
-                      , item      = item)
-
+                      , name      = name)
+    print("Step 4: Backend sent response to pubsub. client: {}".format(
+        message.attributes.get('client_id')
+    ))
 
 
 subscriber.subscribe(subscription_path, callback=callback)

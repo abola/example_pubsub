@@ -71,8 +71,6 @@ GCP_PUBSUB_ADMIN=pubsub-admin-${RND_KEY}
 GCP_PUBSUB_REQUEST_NAME=pubsub-request-${RND_KEY}
 # Google Pub/Sub response name
 GCP_PUBSUB_RESPONSE_NAME=pubsub-response-${RND_KEY}
-# Google pub/sub credential file path
-GOOGLE_APPLICATION_CREDENTIALS=/etc/google/auth/pubsub.json
 ```
 
 ## 建立 GCP 專案與服務
@@ -145,6 +143,8 @@ gcloud pubsub topics create ${GCP_PUBSUB_REQUEST_NAME}
 gcloud pubsub topics create ${GCP_PUBSUB_RESPONSE_NAME}
 ```
 
+> 我們不用在此建立訂閱，訂閱由使用方(軟體)自行建立較合適
+
 ## 建立操作 pubsub 服務帳戶
 
 ### 建立一組新的服務帳戶
@@ -180,7 +180,7 @@ gcloud iam service-accounts keys create \
 cp ${GCP_PUBSUB_ADMIN}.json ./frontend/pubsub.json
 ```
 
-### 
+### 建立 frontend image & push
 
 ```bash
 cd frontend \
@@ -202,11 +202,38 @@ cd frontend \
 cp ${GCP_PUBSUB_ADMIN}.json ./backend/pubsub.json
 ```
 
+### 建立 backend image & push
+
+```bash
+cd backend \
+&& docker build \
+  -t gcr.io/${GCP_PROJECT_ID}/${BACKEND_IMAGE} \
+  . \
+&& docker push gcr.io/${GCP_PROJECT_ID}/${BACKEND_IMAGE} \
+&& cd ..
+```
+
 ## 配置 yaml 設定，將服務啟動於 GKE
+
+### 設定 credential file path
+
+```bash
+# Google pub/sub credential file path
+GOOGLE_APPLICATION_CREDENTIALS=/etc/google/auth/pubsub.json
+```
+
+### 啟動 frontend/backend/redis 服務
 
 ```bash
 envsubst < deploy.yaml | kubectl apply -f -
 ```
+
+### 等待服務 ip 配發 
+
+```bash
+watch -n1 kubectl get svc
+```
+
 ## 完成
 
 最後請記得，刪除本次練習的專案，以節省費用

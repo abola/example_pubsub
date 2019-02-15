@@ -16,6 +16,12 @@ subscription_path = subscriber.subscription_path(project_id,'{}-{}'.format(apply
 
 def callback(message):
     message.ack()
+    print("Step 5: Response item name to client: {}, item: {}, name: {}".format(
+        message.attributes.get('client_id')
+        , message.data.decode("utf-8")
+        , message.attributes.get('name')
+    ))
+
     print('Received message: {}'.format(message))
     requests.get('http://127.0.0.1/refresh/{}/{}/{}'
                  .format(message.attributes.get('client_id')

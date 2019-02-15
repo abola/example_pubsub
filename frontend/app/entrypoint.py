@@ -24,12 +24,15 @@ def send_message(jsonString):
     data = jsonString['item'].encode('utf-8')
     client_id = jsonString['client']
 
+    print("Step 1: Launch item query request from: {}, item: {}".format(
+        client_id
+        , data
+    ))
+
     publisher = pubsub_v1.PublisherClient()
     topic_path = publisher.topic_path(project_id, apply_request)
 
     publisher.publish(topic_path, data=data, client_id=client_id)
-
-    return json.dumps({'errCde':'00','errMsg':''})
 
 @app.route('/refresh/<client_id>/<msg>/<item>')
 def refresh(client_id, msg, item):
