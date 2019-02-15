@@ -26,7 +26,7 @@ def callback(message):
     requests.get('http://127.0.0.1/refresh/{}/{}/{}'
                  .format(message.attributes.get('client_id')
                          , message.data.decode("utf-8")
-                         , message.attributes.get('item')))
+                         , message.attributes.get('name')))
 
 
 subscriber.subscribe(subscription_path, callback=callback)

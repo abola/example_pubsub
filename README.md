@@ -218,8 +218,7 @@ cd backend \
 ### 設定 credential file path
 
 ```bash
-# Google pub/sub credential file path
-GOOGLE_APPLICATION_CREDENTIALS=/etc/google/auth/pubsub.json
+export GOOGLE_APPLICATION_CREDENTIALS=/etc/google/auth/pubsub.json
 ```
 
 ### 啟動 frontend/backend/redis 服務
