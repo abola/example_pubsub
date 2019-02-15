@@ -49,7 +49,7 @@ export RND_KEY=$(cat \
 執行以下指令，會設定本教程中，所有使用到的環境變數
 
 ```bash
-source environments 
+export $(envsubst < environments | grep -v '^#' | xargs)
 ```
 
 詳細的內容，您可以參考檔案[environments]或以下內容
